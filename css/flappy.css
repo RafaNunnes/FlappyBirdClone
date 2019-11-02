@@ -21,7 +21,7 @@
     position: absolute;
     width: 60px;
     left: calc(50% - 30px);
-    bottom: calc(50% - 21.5px);
+    /* bottom: calc(50% - 21.5px); */
 }
 
 .par-de-barreiras {
