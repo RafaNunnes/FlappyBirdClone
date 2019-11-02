@@ -16,10 +16,6 @@ function Barreira(reversa = false) {
     this.setAltura = altura => corpo.style.height = `${altura}px`
 }
 
-// const b = new Barreira(true)
-// b.setAltura(200)
-// document.querySelector('[wm-flappy]').appendChild(b.elemento)
-
 function ParDeBarreiras(altura, abertura, x) {
     this.elemento = novoElemento('div', 'par-de-barreiras')
 
@@ -44,5 +40,45 @@ function ParDeBarreiras(altura, abertura, x) {
     this.setX(x)
 }
 
-const par_de_barreiras = new ParDeBarreiras(450, 100, 400)
-document.querySelector('[wm-flappy]').appendChild(par_de_barreiras.elemento)
+// const par_de_barreiras = new ParDeBarreiras(450, 100, 400)
+// document.querySelector('[wm-flappy]').appendChild(par_de_barreiras.elemento)
+
+function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
+    this.pares = [
+        new ParDeBarreiras(altura, abertura, largura),
+        new ParDeBarreiras(altura, abertura, largura + espaco),
+        new ParDeBarreiras(altura, abertura, largura + espaco * 2),
+        new ParDeBarreiras(altura, abertura, largura + espaco * 3)
+    ]
+
+    // Quantidade de pixels percorridos durante cada iteração da animação
+    const deslocamento = 3
+
+    this.animar = () => {
+        this.pares.forEach( par => {
+            par.setX(par.getX() - deslocamento)
+
+            // Quando o elemento sair da área do jogo (tela)
+            if(par.getX() < -par.getLargura()) {
+                par.setX(par.getX() + espaco * this.pares.length)
+                par.sortearAbertura()
+            }
+
+            const meio = largura/2
+            const cruzou_o_meio = par.getX() + deslocamento >= meio
+                && par.getX() < meio
+
+            cruzou_o_meio && notificarPonto()
+        })
+    }
+}
+
+const barreiras = new Barreiras(450, 1200, 100, 400)
+const area_do_jogo = document.querySelector('[wm-flappy]')
+barreiras.pares.forEach(barreira => {
+    area_do_jogo.appendChild(barreira.elemento)
+})
+
+setInterval( () => {
+    barreiras.animar()
+}, 20)
