@@ -101,19 +101,57 @@ function Passaro(altura_jogo) {
     this.setY(altura_jogo / 2)
 }
 
-const area_do_jogo = document.querySelector('[wm-flappy]')
-const largura_tela = area_do_jogo.clientWidth
-const altura_tela = area_do_jogo.clientHeight
+function Progresso() {
+    this.elemento = novoElemento('span', 'progresso')
 
-const passaro = new Passaro(altura_tela)
-const barreiras = new Barreiras(450, largura_tela, 100, 400)
+    this.atualizarPontos = pontos => {
+        this.elemento.innerHTML = pontos
+    }
+    this.atualizarPontos(0)
+}   
 
-barreiras.pares.forEach(barreira => {
-    area_do_jogo.appendChild(barreira.elemento)
-})
-area_do_jogo.appendChild(passaro.elemento)
+function FlappyBird() {
+    let pontos = 0
 
-setInterval( () => {
-    passaro.animar()
-    barreiras.animar()
-}, 20)
+    const area_do_jogo = document.querySelector('[wm-flappy]')
+    const altura_tela = area_do_jogo.clientHeight
+    const largura_tela = area_do_jogo.clientWidth
+
+    const progresso = new Progresso()
+    const barreiras = new Barreiras(altura_tela, largura_tela, 200, 400, 
+        () => progresso.atualizarPontos(++pontos))
+    const passaro = new Passaro(altura_tela)
+
+    area_do_jogo.appendChild(progresso.elemento)
+    area_do_jogo.appendChild(passaro.elemento)
+    barreiras.pares.forEach( par => {
+        area_do_jogo.appendChild(par.elemento)
+    })
+
+    this.start = () => {
+        // loop do jogo
+        const temporizador = setInterval( () => {
+            passaro.animar()
+            barreiras.animar()
+        }, 20)
+    }
+}
+
+new FlappyBird().start()
+
+// const area_do_jogo = document.querySelector('[wm-flappy]')
+// const largura_tela = area_do_jogo.clientWidth
+// const altura_tela = area_do_jogo.clientHeight
+
+// const passaro = new Passaro(altura_tela)
+// const barreiras = new Barreiras(450, largura_tela, 100, 400)
+
+// barreiras.pares.forEach(barreira => {
+//     area_do_jogo.appendChild(barreira.elemento)
+// })
+// area_do_jogo.appendChild(passaro.elemento)
+
+// setInterval( () => {
+//     passaro.animar()
+//     barreiras.animar()
+// }, 20)
